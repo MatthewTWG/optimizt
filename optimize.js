@@ -31,6 +31,7 @@ export async function optimize({ filePaths, config }) {
 	const filePathsCount = filePaths.length;
 
 	if (filePathsCount <= 0) {
+		log('No supported image files found');
 		return;
 	}
 
@@ -154,6 +155,10 @@ async function processFileByFormat({ fileBuffer, config, isLossless }) {
 			return processSvg({ fileBuffer, config });
 		}
 
+		case 'webp': {
+			return processWebp({ fileBuffer, config, isLossless });
+		}
+
 		default: {
 			throw new Error(`Unsupported image format: "${imageMetadata.format}"`);
 		}
@@ -221,6 +226,16 @@ function processSvg({ fileBuffer, config }) {
 			config.svg,
 		).data,
 	);
+}
+
+async function processWebp({ fileBuffer, config, isLossless }) {
+	const imageMetadata = await parseImageMetadata(fileBuffer);
+	const isAnimated = imageMetadata.pages > 1;
+
+	return sharp(fileBuffer, { animated: isAnimated })
+		.rotate() // Rotate image using information from EXIF Orientation tag
+		.webp(isLossless ? config?.webp?.lossless : config?.webp?.lossy || {})
+		.toBuffer();
 }
 
 function pipe({ command, commandOptions, inputBuffer }) {

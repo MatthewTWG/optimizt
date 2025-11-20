@@ -33,6 +33,7 @@ export async function convert({ filePaths, config }) {
 	const filePathsCount = filePaths.length;
 
 	if (!filePathsCount) {
+		log('No supported image files found');
 		return;
 	}
 

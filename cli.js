@@ -41,7 +41,7 @@ if (program.args.length === 0) {
 		isVerbose: Boolean(verbose),
 	});
 
-	optimizt({
+	await optimizt({
 		inputPaths: program.args,
 		outputDirectoryPath: output,
 		configFilePath: config,

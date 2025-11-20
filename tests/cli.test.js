@@ -75,6 +75,15 @@ describe('CLI', () => {
 				});
 			});
 
+			test('WebP should be optimized', () => {
+				const file = 'webp-not-optimized.webp';
+				const stdout = runCliWithParameters(`${workDirectory}${file}`);
+
+				expectFileRatio({
+					stdout, file, maxRatio: 80, minRatio: 70,
+				});
+			});
+
 			test('Files should not be optimized if ratio <= 0', () => {
 				const stdout = runCliWithParameters(`${workDirectory}svg-optimized.svg ${workDirectory}jpeg-one-pixel.jpg`);
 
@@ -87,8 +96,8 @@ describe('CLI', () => {
 			test('Files in provided directory should be optimized', () => {
 				const stdout = runCliWithParameters(workDirectory);
 
-				expectStringContains(stdout, 'Optimizing 8 images (lossy)...');
-				expectTotalRatio({ maxRatio: 60, minRatio: 55, stdout });
+				expectStringContains(stdout, 'Optimizing 9 images (lossy)...');
+				expectTotalRatio({ maxRatio: 65, minRatio: 55, stdout });
 			});
 		});
 
@@ -120,6 +129,15 @@ describe('CLI', () => {
 				});
 			});
 
+			test('WebP should be optimized', () => {
+				const file = 'webp-not-optimized.webp';
+				const stdout = runCliWithParameters(`--lossless ${workDirectory}${file}`);
+
+				expectFileRatio({
+					stdout, file, maxRatio: 30, minRatio: 20,
+				});
+			});
+
 			test('Files should not be optimized if ratio <= 0', () => {
 				const stdout = runCliWithParameters(`--lossless ${workDirectory}jpeg-one-pixel.jpg`);
 
@@ -131,7 +149,7 @@ describe('CLI', () => {
 			test('Files in provided directory should be optimized', () => {
 				const stdout = runCliWithParameters(`--lossless ${workDirectory}`);
 
-				expectStringContains(stdout, 'Optimizing 8 images (lossless)...');
+				expectStringContains(stdout, 'Optimizing 9 images (lossless)...');
 				expectTotalRatio({ maxRatio: 25, minRatio: 15, stdout });
 			});
 		});
